@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            height: 80vh!important;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .message-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background-color: #f0f2f5;
+            overflow: hidden;
+        }
+
+        .message .user {
+            font-weight: bold;
+            color: #000;
+            font-size: 14px;
+        }
+
+        .message .content {
+            margin-top: 5px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .message .time {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .message-form {
+            margin-top: 20px;
+            display: flex;
+        }
+
+        .message-form input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px 0 0 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .message-form input[type="submit"] {
+            width: 100px;
+            padding: 10px;
+            border: none;
+            background-color: #0084ff;
+            color: #fff;
+            border-radius: 0 8px 8px 0;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .username-form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .username-form input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #0084ff;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="username-form" id="username-form">
+            <form id="set-username">
+                <input type="text" id="username-input" placeholder="Enter your username...">
+                <input type="submit" value="Set Username">
+            </form>
+        </div>
+        <ul class="message-list" id="message-list"></ul>
+        <form id="message-form" class="message-form" style="display: none;">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <input type="submit" value="Send">
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const container = document.getElementById('container');
+        const usernameForm = document.getElementById('username-form');
+        const messageForm = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+        const usernameInput = document.getElementById('username-input');
+        const messageList = document.getElementById('message-list');
+
+        let username = '';
+
+        document.getElementById('set-username').addEventListener('submit', (e) => {
+            e.preventDefault();
+            username = usernameInput.value.trim();
+            if (username !== '') {
+                usernameForm.style.display = 'none';
+                messageForm.style.display = 'flex';
+            }
+        });
+
+        messageForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            if (message !== '') {
+                const currentTime = new Date().toLocaleTimeString();
+                socket.emit('chat message', { username: username, message: message, time: currentTime });
+                messageInput.value = '';
+            }
+        });
+
+        socket.on('chat message', (msg) => {
+            const messageItem = document.createElement('li');
+            messageItem.classList.add('message');
+            messageItem.innerHTML = `
+                <div class="user">${msg.username}:</div>
+                <div class="content">${msg.message}</div>
+                <div class="time">${msg.time}</div>
+            `;
+            messageList.appendChild(messageItem);
+            messageList.scrollTop = messageList.scrollHeight;
+        });
+    </script>
+</body>
+</html>
