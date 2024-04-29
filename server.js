@@ -21,7 +21,7 @@ io.on('connection', (socket) => {
         io.emit('chat message', msg);
     });
     const interval = setInterval(() => {
-        socket.emit('chat message', { username: "Server", message: "Day la tin nhan Server", time: "currentTime" });
+        io.emit('chat message', { username: "Server", message: "Day la tin nhan Server", time: "currentTime" });
     }, 1000);
 });
 
