@@ -20,8 +20,11 @@ io.on('connection', (socket) => {
     socket.on('chat message', (msg) => {
         io.emit('chat message', msg);
     });
+    const interval = setInterval(() => {
+        socket.emit('chat message', { username: "Server", message: "Day la tin nhan Server", time: "currentTime" });
+    }, 1000);
 });
 
 server.listen(3010, () => {
-    console.log('Server is running on port 3000');
+    console.log('Server is running on port 3010');
 });
