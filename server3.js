@@ -35,6 +35,7 @@ io.on("connection", (socket) => {
 
     socket.on("phancung", (msg) => {
         console.log("phancung", msg);
+         io.emit("chat message", msg);
     });
 
     const interval = setInterval(() => {
