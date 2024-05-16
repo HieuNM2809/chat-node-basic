@@ -1,0 +1,9 @@
+ = Chạy server lên
+1. Mở Cmd đường dẫn là D:\chat-node-basic
+2. Chạy 
++ node server.js 
+=> Kiểm tả trên trình duyệt: http://127.0.0.1:3010/ or http://localhost:3010/
+
+= Thông tin socket.io
++ IP: 127.0.0.1 hoặc localhost
++ port: 3010
